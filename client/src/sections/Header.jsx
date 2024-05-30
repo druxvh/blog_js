@@ -3,7 +3,7 @@ import Nav from '../components/Nav'
 
 const Header = () => {
   return (
-    <div className='max-container ring mb-8'>
+    <div className='max-container ring mb-8 mx-10'>
         <Nav />
     </div>
   )

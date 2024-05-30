@@ -2,9 +2,9 @@ import React from 'react'
 
 const Post = () => {
   return (
-    <div className='ring max-h-48 flex gap-8 overflow-hidden'>
-        <div className="w-1/3">
-            <img src="https://images.unsplash.com/photo-1715179067049-ddadb5f0c985?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8fA%3D%3D" alt="image" className='object-contain' />
+    <div className='ring max-h-48 my-5 flex gap-8 overflow-hidden'>
+        <div className="ring ring-slate-800 min-h-40 min-w-60">
+            <img src="https://images.unsplash.com/photo-1716929134918-d8ae82fee46e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzMHx8fGVufDB8fHx8fA%3D%3D" alt="image" className='object-contain ' />
         </div>
         <div className="">
             <h2 className="text-2xl font-serif font-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit consectetur adipisicing elit.</h2>

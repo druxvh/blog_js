@@ -6,7 +6,7 @@ import Content from "./sections/Content";
 
 function App() {
   return (
-    <main>
+    <main className="flex justify-center">
       <section>
         <Header />
       </section>
