@@ -20,17 +20,18 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Content/>
+      },
+      {
+        path: "/login",
+        element: <Login/>
+      },
+      {
+        path: "/register",
+        element: <Register/>
       }
     ]
   },
-  {
-    path: "/login",
-    element: <Login/>
-  },
-  {
-    path: "/register",
-    element: <Register/>
-  }
+  
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
