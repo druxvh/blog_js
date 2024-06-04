@@ -86,6 +86,20 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/profile", (req, res)=>{
+  const {token} = req.cookies
+  if(!token) {
+    return res.status(401).json({message: 'No token provided'})
+
+  }
+  try {
+    const decoded = jwt.verify(token, secret)
+    res.json({message: 'Profile Accessed', username: decoded.username})
+  } catch (error) {
+    res.status(401).json({message: "Invalid Token"})
+  }
+})
+
 app.listen(port, () => {
   console.log(`Server running on the port: ${port}`);
 });
