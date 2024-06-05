@@ -12,15 +12,14 @@ const port = process.env.PORT || 4000;
 const uri = process.env.MONGO_DB_URI;
 const secret = process.env.JWT_SECRET;
 
-
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(
   cors({
     // Optional additional configuration for cors
     origin: process.env.FRONT_END_URL, // frontend's URL
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    credentials: true,
   })
 );
 
@@ -77,28 +76,34 @@ app.post("/login", async (req, res) => {
       { expiresIn: "3d" }
     );
 
-    res.cookie('token', token, {httpOnly: true}) //saves the jwt token to cookies
-    res.status(201).json(token);
-
+    res.cookie("token", token, { httpOnly: true }); //saves the jwt token to cookies
+    res.status(201).json({
+      id: userDoc._id,
+      username
+    });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error during login" });
   }
 });
 
-app.post("/profile", (req, res)=>{
-  const {token} = req.cookies
-  if(!token) {
-    return res.status(401).json({message: 'No token provided'})
-
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
   }
   try {
-    const decoded = jwt.verify(token, secret)
-    res.json({message: 'Profile Accessed', username: decoded.username})
+    const decoded = jwt.verify(token, secret);
+    res.json({ message: "Profile Accessed", username: decoded.username });
   } catch (error) {
-    res.status(401).json({message: "Invalid Token"})
+    res.status(401).json({ message: "Invalid Token" });
   }
-})
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('token')
+  res.status(200).json({message: "Logged Out Successfully"})
+});
 
 app.listen(port, () => {
   console.log(`Server running on the port: ${port}`);

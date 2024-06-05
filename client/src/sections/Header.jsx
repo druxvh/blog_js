@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const Header = () => {
-  const [username, setUsername] = useState(null);
+  const { userInfo, setUserInfo } = useContext(UserContext);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await fetch("http://127.0.0.1:4000/profile", {
-          method: "POST",
           credentials: "include",
         });
         if (response.ok) {
           const data = await response.json();
-          setUsername(data.username);
+          setUserInfo(data);
           console.log(data);
         } else {
           console.error("Failed to fetch profile");
@@ -23,6 +23,19 @@ const Header = () => {
     };
     fetchProfile();
   }, []);
+
+  const logout = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:4000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) setUserInfo(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const username = userInfo?.username;
   return (
     <div className="max-container ring mb-8 ">
       <div className="flex justify-between items-center">
@@ -32,11 +45,19 @@ const Header = () => {
         <div className="flex gap-2">
           {username ? (
             <>
-            <Link to="/create" className="bg-green-500 text-white py-1.5 px-4 rounded">
-              Create new post
-            </Link>
-            <button className="bg-red-500 text-white py-1.5 px-4 rounded">Logout</button>
-          </>
+              <Link
+                to="/create"
+                className="bg-green-500 text-white py-1.5 px-4 rounded"
+              >
+                Create new post
+              </Link>
+              <button
+                onClick={logout}
+                className="bg-red-500 text-white py-1.5 px-4 rounded"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link
