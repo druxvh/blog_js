@@ -19,7 +19,7 @@ const Login = () => {
         credentials: "include",
       });
 
-      if (response.ok) {
+      if (response.ok) {            
         response.json().then((userinfo) => {
           setUserInfo(userinfo);
           setRedirect(true);

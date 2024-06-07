@@ -15,7 +15,7 @@ const Header = () => {
           setUserInfo(data);
           console.log(data);
         } else {
-          console.error("Failed to fetch profile");
+          console.log("You need to login to access!");
         }
       } catch (error) {
         console.error("Error:", error);

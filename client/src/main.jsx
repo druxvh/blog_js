@@ -4,10 +4,13 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //Pages, Components & Sections
-import Layout from "./sections/Layout.jsx";
+import Layout from "./Pages/Layout.jsx";
 import Content from "./sections/Content.jsx";
-import Register from "./sections/Register.jsx";
-import Login from "./sections/Login.jsx";
+import Register from "./Pages/RegisterPage.jsx";
+import Login from "./Pages/LoginPage.jsx";
+import CreatePost from "./Pages/CreatePost.jsx";
+
+
 import { UserContextProvider } from "./context/UserContext.jsx";
 
 const router = createBrowserRouter([
@@ -27,14 +30,16 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
+      {
+        path: "/create",
+        element: <CreatePost/>,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <UserContextProvider>
-      <RouterProvider router={router} />
-    </UserContextProvider>
-  </React.StrictMode>
+  <UserContextProvider>
+    <RouterProvider router={router} />
+  </UserContextProvider>
 );
