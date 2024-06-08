@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [content, setContent] = useState("");
-  const navigate = useNavigate()
+  const quillRef = useRef(null);
+  const navigate = useNavigate();
 
   const modules = {
     toolbar: [
@@ -41,7 +42,8 @@ const CreatePost = () => {
 
   const createNewPost = async (e) => {
     e.preventDefault();
-    if (!title || !summary || !image || !content) {
+    console.log(quillRef.current.getEditor().getText());
+    if (!title || !description || !image || !content) {
       alert("Please fill all the fields");
       return;
     }
@@ -49,7 +51,7 @@ const CreatePost = () => {
     try {
       const formData = new FormData();
       formData.set("title", title);
-      formData.set("summary", summary);
+      formData.set("description", description);
       formData.set("image", image);
       formData.set("content", content);
 
@@ -58,9 +60,9 @@ const CreatePost = () => {
         body: formData,
       });
 
-      if (response.ok) {      
+      if (response.ok) {
         console.log("Post created successfully");
-        navigate('/')
+        navigate("/");
       } else {
         console.log("Failed to create a post");
       }
@@ -89,14 +91,14 @@ const CreatePost = () => {
       </div>
       <div className="mb-5">
         <label className="block mb-2 text-sm font-medium text-gray-900 ">
-          Summary
+          Description
         </label>
         <input
           type="text"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="Summary"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           required
         />
       </div>
@@ -113,6 +115,7 @@ const CreatePost = () => {
       </div>
       <div className="mb-5 ">
         <ReactQuill
+          ref={quillRef}
           value={content}
           onChange={setContent}
           modules={modules}

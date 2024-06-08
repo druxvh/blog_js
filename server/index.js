@@ -7,12 +7,14 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import path from "path";
-// import fs from "fs"
+import { fileURLToPath } from "url";
 
 import User from "./models/User.js";
 import Post from "./models/Post.js";
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const port = process.env.PORT || 4000;
 const uri = process.env.MONGO_DB_URI;
 const secret = process.env.JWT_SECRET;
@@ -28,20 +30,22 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    return cb(null, "uploads/");
+    return cb(null, path.join(__dirname, 'uploads'));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    return cb(null, uniqueSuffix + path.extname(file.originalname));
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
+    return cb(null, uniqueSuffix );
   },
 });
 const upload = multer({ storage });
 
-app.use(express.json());
 
 //MongoDB connection
 mongoose
@@ -129,9 +133,9 @@ app.post("/logout", (req, res) => {
 
 // Posting route with image upload using Multer middleware
 app.post("/post", upload.single("image"), async (req, res) => {
-  const { title, summary, content } = req.body;
+  const { title, description, content } = req.body;
 
-  if (!title || !summary || !content || !req.file) {
+  if (!title || !description|| !content || !req.file) {
     return res.status(400).json({ message: "All fields are required" });
   }
   // Start a session
@@ -140,9 +144,9 @@ app.post("/post", upload.single("image"), async (req, res) => {
   try {
     const newPost = new Post({
       title,
-      summary,
+      description,
       content,
-      coverImage: req.file.filename,
+      coverImage: `/uploads/${req.file.filename}`,
     });
     const savedPost = await newPost.save({ session });
 
@@ -165,6 +169,17 @@ app.post("/post", upload.single("image"), async (req, res) => {
   }
 
 });
+
+//Fetching all posts
+app.get("/posts", async(req, res)=>{
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 }).limit(20)
+    res.status(200).json(posts)
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ message: 'Error fetching posts' });
+  }
+})
 
 // Server running
 app.listen(port, () => {

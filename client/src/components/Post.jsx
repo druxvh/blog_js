@@ -1,18 +1,36 @@
 import React from 'react'
 
-const Post = () => {
-  return (
-    <div className='ring max-h-48 my-5 flex gap-8 overflow-hidden'>
-        <div className="ring ring-slate-800 min-h-40 min-w-60">
-            <img src="https://images.unsplash.com/photo-1716929134918-d8ae82fee46e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzMHx8fGVufDB8fHx8fA%3D%3D" alt="image" className='object-contain ' />
-        </div>
-        <div className="">
-            <h2 className="text-2xl font-serif font-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit consectetur adipisicing elit.</h2>
-            <span className="text-xs text-slate-600 font-mono ">12:00:33</span>
-            <p className="mt-3 text-base">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic expedita, minus veritatis excepturi eveniet mollitia quidem animi illum optio pariatur quas unde.</p>
-        </div>
-    </div>
-  )
-}
+const Post = ({ title, description, content, coverImage, createdAt }) => {
 
+  // Format date and time code snippet from ChatGPT
+  const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const formattedTime = new Date(createdAt).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return (
+    <div className="ring max-h-48 my-5 flex flex-col md:flex-row gap-4 overflow-hidden">
+      <div className="ring ring-slate-800 h-40 w-full md:w-1/3 flex-shrink-0 overflow-hidden">
+        <img
+          src={`http://127.0.0.1:4000/uploads/${coverImage}`}
+          alt={title}
+          className="object-cover"
+        />
+      </div>
+      <div className="flex flex-col justify-between w-full md:w-2/3">
+        <div>
+          <h2 className="text-2xl font-serif font-bold">{title}</h2>
+          <span className="text-xs text-slate-600 font-mono">{`${formattedDate} ${formattedTime}`}</span>
+          <p className="mt-3 text-base">{description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 export default Post
