@@ -58,6 +58,7 @@ const CreatePost = () => {
       const response = await fetch("http://127.0.0.1:4000/post", {
         method: "POST",
         body: formData,
+        credentials: 'include'
       });
 
       if (response.ok) {

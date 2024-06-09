@@ -31,21 +31,23 @@ app.use(
   })
 );
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    return cb(null, path.join(__dirname, 'uploads'));
+    return cb(null, path.join(__dirname, "uploads"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
-    return cb(null, uniqueSuffix );
+    const uniqueSuffix =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9) +
+      path.extname(file.originalname);
+    return cb(null, uniqueSuffix);
   },
 });
 const upload = multer({ storage });
-
 
 //MongoDB connection
 mongoose
@@ -69,6 +71,7 @@ app.post("/register", async (req, res) => {
     const userDoc = await User.create({ username, password: hashedPassword });
 
     res.status(201).json(userDoc);
+    console.log("UserDoc_register: ", userDoc);
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -105,6 +108,7 @@ app.post("/login", async (req, res) => {
       id: userDoc._id,
       username,
     });
+    console.log("UserDoc_login: ", userDoc);
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error during login" });
@@ -133,53 +137,72 @@ app.post("/logout", (req, res) => {
 
 // Posting route with image upload using Multer middleware
 app.post("/post", upload.single("image"), async (req, res) => {
+  const { token } = req.cookies;
   const { title, description, content } = req.body;
 
-  if (!title || !description|| !content || !req.file) {
+  if (!title || !description || !content || !req.file) {
     return res.status(400).json({ message: "All fields are required" });
   }
+
+  let userId;
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    userId = decoded.id;
+    console.log(userId);
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid Token" });
+  }
+
   // Start a session
   const session = await mongoose.startSession();
   session.startTransaction();
+
   try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const newPost = new Post({
       title,
       description,
       content,
-      coverImage: `/uploads/${req.file.filename}`,
-    });
+      coverImage: `${req.file.filename}`,
+      author: user._id,
+    })
+
+    console.log("Post: ", newPost);
+
     const savedPost = await newPost.save({ session });
 
-     // If everything is successful, commit the transaction
+    // If everything is successful, commit the transaction
     await session.commitTransaction();
     session.endSession();
 
-
     res.status(201).json(savedPost);
-
-
-
   } catch (error) {
-  // If there's an error, abort the transaction
+    // If there's an error, abort the transaction
     console.error("Error creating post:", error);
     await session.abortTransaction();
     session.endSession();
     res.status(500).json({ message: "Failed to create post" });
-
   }
-
 });
 
 //Fetching all posts
-app.get("/posts", async(req, res)=>{
+app.get("/posts", async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 }).limit(20)
-    res.status(200).json(posts)
+    const posts = await Post.find()
+    .populate('author', ['username'])
+    .sort({ createdAt: -1 })
+    .limit(20);
+    res.status(200).json(posts);
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    res.status(500).json({ message: 'Error fetching posts' });
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Error fetching posts" });
   }
-})
+});
 
 // Server running
 app.listen(port, () => {

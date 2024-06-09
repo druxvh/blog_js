@@ -26,6 +26,7 @@ const Content = () => {
       {posts.map((post) => (
         <div key={post._id}>
           <Post {...post} />
+          {console.log(post)}
         </div>
       ))}
     </div>

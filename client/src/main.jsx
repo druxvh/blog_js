@@ -9,6 +9,7 @@ import Content from "./sections/Content.jsx";
 import Register from "./Pages/RegisterPage.jsx";
 import Login from "./Pages/LoginPage.jsx";
 import CreatePost from "./Pages/CreatePost.jsx";
+import PostPage from "./Pages/PostPage.jsx";
 
 
 import { UserContextProvider } from "./context/UserContext.jsx";
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/create",
         element: <CreatePost/>,
+      },
+      {
+        path: "/post/:id",
+        element: <PostPage/>,
       },
     ],
   },
