@@ -73,7 +73,7 @@ const CreatePost = () => {
   };
 
   return (
-    <form className="max-w-3xl mx-auto" onSubmit={createNewPost}>
+    <form className="max-w-3xl mx-auto mb-20" onSubmit={createNewPost}>
       <h1 className="text-3xl font-semibold text-center font-serif my-8">
         Write it up!
       </h1>
