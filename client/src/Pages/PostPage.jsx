@@ -35,9 +35,9 @@ const formattedTime =new Date(postInfo.createdAt).toLocaleTimeString("en-GB", {
   second: "2-digit",
 });
   return (
-    <div className=" flex px-10  flex-wrap">
+    <div className="  max-w-3xl flex mx-auto px-10  flex-wrap">
       <div className=" flex flex-col  gap-8 my-14">
-        <h1 className=" text-5xl  max-w-2xl  font-bold ">
+        <h1 className=" text-4xl  max-w-md sm:max-w-2xl sm:text-5xl font-bold ">
           {postInfo.title}
         </h1>
         <div className="">
