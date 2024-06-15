@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const PostPage = () => {
   const { id } = useParams();
@@ -40,12 +40,16 @@ const formattedTime =new Date(postInfo.createdAt).toLocaleTimeString("en-GB", {
         <h1 className=" text-4xl  max-w-md sm:max-w-2xl sm:text-5xl font-bold ">
           {postInfo.title}
         </h1>
-        <div className="">
+        <div className="flex justify-between">
+          <div>
+
             <span className="text-xs text-slate-950 font-mono font-semibold cursor-pointer">{`By- @${postInfo.author.username}`}</span>
             <span className="text-xs text-slate-600 font-mono">{` / ${formattedDate} ${formattedTime}s`}</span>
+          </div>
+          <Link to={`/edit/${postInfo._id}`} className="text-base font-mono underline font-semibold hover:text-blue-600">Edit</Link>
         </div>
       </div>
-      <div className="mb-10 ring">
+      <div className="mb-10 ">
         <img
           src={`http://127.0.0.1:4000/uploads/${postInfo.coverImage}`}
           alt="Post Cover"

@@ -13,6 +13,7 @@ import PostPage from "./Pages/PostPage.jsx";
 
 
 import { UserContextProvider } from "./context/UserContext.jsx";
+import EditPost from "./Pages/EditPost.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/post/:id",
         element: <PostPage/>,
+      },
+      {
+        path: "/edit/:id",
+        element: <EditPost/>,
       },
     ],
   },

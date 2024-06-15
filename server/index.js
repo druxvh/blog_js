@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 
 import User from "./models/User.js";
 import Post from "./models/Post.js";
+import { ADDRGETNETWORKPARAMS } from "dns";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -149,7 +150,6 @@ app.post("/post", upload.single("image"), async (req, res) => {
   try {
     const decoded = jwt.verify(token, secret);
     userId = decoded.id;
-    console.log(userId);
   } catch (error) {
     return res.status(401).json({ message: "Invalid Token" });
   }
@@ -168,11 +168,10 @@ app.post("/post", upload.single("image"), async (req, res) => {
       title,
       description,
       content,
-      coverImage: `${req.file.filename}`,
+      coverImage: req.file.filename,
       author: user._id,
-    })
+    });
 
-    console.log("Post: ", newPost);
 
     const savedPost = await newPost.save({ session });
 
@@ -194,9 +193,9 @@ app.post("/post", upload.single("image"), async (req, res) => {
 app.get("/posts", async (req, res) => {
   try {
     const posts = await Post.find()
-    .populate('author', ['username'])
-    .sort({ createdAt: -1 })
-    .limit(20);
+      .populate("author", ["username"])
+      .sort({ createdAt: -1 })
+      .limit(20);
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -205,17 +204,65 @@ app.get("/posts", async (req, res) => {
 });
 
 //Post Page
-app.get('/post/:id', async (req,res)=>{
-  const {id} = req.params
+app.get("/post/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    const post = await Post.findById(id).populate('author', ['username'])
-    res.json(post)
-    if(!post){return res.status(404).json({message:"Post not found"})}
+    const post = await Post.findById(id).populate("author", ["username"]);
+    res.json(post);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
   } catch (error) {
     console.error("Error fetching post:", error);
     res.status(500).json({ message: "Failed to fetch post" });
   }
-})
+});
+
+//Update and Edit the Post
+app.put(`/post/:id`, upload.single("image"), async (req, res) => {
+  const { token } = req.cookies;
+
+   // Verify token and get user ID
+  let userId;
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+
+  const { id } = req.params;
+  const { title, description, content } = req.body;
+
+  try {
+    const postDoc = await Post.findById(id);
+    if (!postDoc) { // Added check for post existence
+      return res.status(404).json({ message: "Post not found" });
+    }
+  
+    // Check if the user is authorized to update the post
+    if (postDoc.author.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    // Prepare the update data
+    const updateData = { title, description, content };
+    if (req.file) {
+      updateData.coverImage = req.file.filename;
+    } else {
+      updateData.coverImage = postDoc.coverImage; // retains the old image
+    }
+  
+    // Update the post
+    const updatedPost = await Post.updateOne({ _id: id }, { $set: updateData });
+  
+    res.json({ message: "Post updated successfully", post: updatedPost });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ message: "Failed to update post" });
+  }
+});
 
 // Server running
 app.listen(port, () => {
