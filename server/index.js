@@ -264,6 +264,43 @@ app.put(`/post/:id`, upload.single("image"), async (req, res) => {
   }
 });
 
+//Delete Post
+app.delete(`/post/:id`, async(req,res)=>{
+  const { token } = req.cookies;
+
+  // Verify token and get user ID
+ let userId;
+
+ try {
+   const decoded = jwt.verify(token, secret);
+   userId = decoded.id;
+ } catch (error) {
+   return res.status(401).json({ message: "Invalid or expired token" });
+ }
+
+ const { id } = req.params;
+ try {
+  const postDoc = await Post.findById(id);
+  if (!postDoc) { // Added check for post existence
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  // Check if the user is authorized to update the post
+  if (postDoc.author.toString() !== userId) {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
+
+
+  // delete the post
+  const deletePost = await Post.findByIdAndDelete(id)
+
+  res.status(200).json({ message: "Post deleted successfully"});
+} catch (error) {
+  console.error("Error deleting post:", error);
+  res.status(500).json({ message: "Failed to delete post" });
+}
+})
+
 // Server running
 app.listen(port, () => {
   console.log(`Server running on the port: ${port}`);

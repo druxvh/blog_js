@@ -1,13 +1,13 @@
 import React, { useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
 
-  const { userinfo, setUserInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate()
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -19,10 +19,11 @@ const Login = () => {
         credentials: "include",
       });
 
+      //saves the user info into the context
       if (response.ok) {            
-        response.json().then((userinfo) => {
-          setUserInfo(userinfo);
-          setRedirect(true);
+        response.json().then((userInfo) => {
+          setUserInfo(userInfo);
+          navigate('/')
         });
       } else {
         alert("Wrong credentials");
@@ -31,9 +32,7 @@ const Login = () => {
       console.error("Failed to register user:", error);
     }
   };
-  if (redirect) {
-    return <Navigate to={"/"} />;
-  }
+  
   return (
     <form className="max-w-sm mx-auto" onSubmit={loginUser}>
       <h1 className="text-3xl font-semibold font-serif my-8">Login</h1>

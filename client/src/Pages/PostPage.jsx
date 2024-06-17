@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const PostPage = () => {
   const { id } = useParams();
   const [postInfo, setPostInfo] = useState(null);
+  const {userInfo, setUserInfo} = useContext(UserContext)
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -34,6 +38,22 @@ const formattedTime =new Date(postInfo.createdAt).toLocaleTimeString("en-GB", {
   minute: "2-digit",
   second: "2-digit",
 });
+
+const deletePost = async (e) => {
+  e.preventDefault()
+  
+      const response = await fetch(`http://127.0.0.1:4000/post/${id}`,{
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        console.log("Post deleted successfully");
+        navigate(`/`);
+      } else {
+        console.log("Failed to delete a post");
+      }
+  };
+
   return (
     <div className="  max-w-3xl flex mx-auto px-10  flex-wrap">
       <div className=" flex flex-col  gap-8 my-14">
@@ -46,7 +66,13 @@ const formattedTime =new Date(postInfo.createdAt).toLocaleTimeString("en-GB", {
             <span className="text-xs text-slate-950 font-mono font-semibold cursor-pointer">{`By- @${postInfo.author.username}`}</span>
             <span className="text-xs text-slate-600 font-mono">{` / ${formattedDate} ${formattedTime}s`}</span>
           </div>
+          <div className="flex gap-6">
+
+    {userInfo && userInfo.username === postInfo.author.username}
+
           <Link to={`/edit/${postInfo._id}`} className="text-base font-mono underline font-semibold hover:text-blue-600">Edit</Link>
+          <button className="text-base font-mono underline font-semibold hover:text-red-600" onClick={deletePost}>Delete</button>
+          </div>
         </div>
       </div>
       <div className="mb-10 ">
@@ -60,7 +86,8 @@ const formattedTime =new Date(postInfo.createdAt).toLocaleTimeString("en-GB", {
         dangerouslySetInnerHTML={{ __html: postInfo.content }}
         className="pb-28 text-base"
       />
-      {console.log(postInfo)}
+      {console.log("HEY",userInfo,postInfo)}
+      {console.log(userInfo.username === postInfo.author.username)}
     </div>
   );
 };
