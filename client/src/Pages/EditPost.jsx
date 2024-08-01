@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Editor from "../sections/Editor";
+import TipTapEditor from "../components/TipTapEditor";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -105,7 +105,7 @@ const EditPost = () => {
         />
       </div>
       <div className="mb-5 ">
-        <Editor value={content} onChange={setContent} />
+        <TipTapEditor value={content} onChange={setContent} />
       </div>
       <button
         type="submit"

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
-import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
-import Editor from "../sections/Editor";
+import TipTapEditor from "../components/TipTapEditor";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -10,10 +9,9 @@ const CreatePost = () => {
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
-
   const createNewPost = async (e) => {
     e.preventDefault();
-    console.log(quillRef.current.getEditor().getText());
+    
     if (!title || !description || !image || !content) {
       alert("Please fill all the fields");
       return;
@@ -85,8 +83,8 @@ const CreatePost = () => {
           required
         />
       </div>
-      <div className="mb-5 ">
-        <Editor value={content} onChange={setContent}/>
+      <div className="mb-5  outline">
+        <TipTapEditor value={content} onChange={setContent} />
       </div>
       <button
         type="submit"

@@ -10,9 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tiptap/extension-heading": "^2.5.8",
+    "@tiptap/extension-paragraph": "^2.5.8",
+    "@tiptap/extension-placeholder": "^2.5.8",
+    "@tiptap/extension-text": "^2.5.8",
+    "@tiptap/pm": "^2.5.8",
+    "@tiptap/react": "^2.5.8",
+    "@tiptap/starter-kit": "^2.5.8",
+    "node-modules": "^1.0.1",
     "quill": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^6.1.6",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.23.1"
   },

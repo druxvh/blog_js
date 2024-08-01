@@ -1,28 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 const Header = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:4000/profile", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserInfo(data);
-          console.log(data);
-        } else {
-          console.log("You need to login to access!");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-    fetchProfile();
-  }, []);
+  
 
   const logout = async () => {
     try {
@@ -35,21 +17,24 @@ const Header = () => {
       console.error(error);
     }
   };
+
+  // Assigning Username
   const username = userInfo?.username;
   return (
     <div className="max-container ring mb-8 ">
       <div className="flex justify-between items-center">
         <Link to={"/"} className="text-2xl font-bold font-serif">
-          Write It.
+          Blog
         </Link>
         <div className="flex gap-2">
           {username ? (
             <>
+            <h1 className="p-1">{username}</h1>
               <Link
                 to="/create"
                 className="bg-green-500 text-white py-1.5 px-4 rounded"
               >
-                Create new post
+                Create Post
               </Link>
               <button
                 onClick={logout}
@@ -70,7 +55,7 @@ const Header = () => {
                 to={"/register"}
                 className="border-blue-500 text-blue-500 hover:text-blue-600 hover:border-blue-600 font-semibold py-1.5 px-4 border rounded"
               >
-                Sign Up
+                Register
               </Link>
             </>
           )}

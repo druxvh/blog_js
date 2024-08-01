@@ -15,13 +15,14 @@ const Login = () => {
       const response = await fetch("http://127.0.0.1:4000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
         credentials: "include",
+        body: JSON.stringify({ username, password }),
       });
 
       //saves the user info into the context
       if (response.ok) {            
         response.json().then((userInfo) => {
+          console.log(userInfo);
           setUserInfo(userInfo);
           navigate('/')
         });

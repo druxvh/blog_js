@@ -72,7 +72,6 @@ app.post("/register", async (req, res) => {
     const userDoc = await User.create({ username, password: hashedPassword });
 
     res.status(201).json(userDoc);
-    console.log("UserDoc_register: ", userDoc);
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -85,12 +84,9 @@ app.post("/login", async (req, res) => {
 
   try {
     const userDoc = await User.findOne({ username });
-    if (!userDoc) {
-      return res.status(400).json({ error: "Invalid username or password" });
-    }
-
     const isPasswordValid = bcrypt.compareSync(password, userDoc.password);
-    if (!isPasswordValid) {
+
+    if (!userDoc || !isPasswordValid) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
@@ -101,15 +97,22 @@ app.post("/login", async (req, res) => {
         username,
       },
       secret,
-      { expiresIn: "3d" }
+      { expiresIn: "7d" }
     );
 
-    res.cookie("token", token, { httpOnly: true }); //saves the jwt token to cookies
+    res.cookie("token", token, { 
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+    
+    }); //saves the jwt token to cookies
+
     res.status(201).json({
       id: userDoc._id,
       username,
-    });
+    })
     console.log("UserDoc_login: ", userDoc);
+    
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error during login" });
@@ -120,11 +123,11 @@ app.post("/login", async (req, res) => {
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json({ message: "No JWT token was provided" });
   }
   try {
-    const decoded = jwt.verify(token, secret);
-    res.json({ message: "Profile Accessed", username: decoded.username });
+    const decodedToken = jwt.verify(token, secret);
+    res.json({ message: "Profile Accessed", username: decodedToken.username });
   } catch (error) {
     res.status(401).json({ message: "Invalid Token" });
   }
@@ -148,8 +151,8 @@ app.post("/post", upload.single("image"), async (req, res) => {
   let userId;
 
   try {
-    const decoded = jwt.verify(token, secret);
-    userId = decoded.id;
+    const decodedToken = jwt.verify(token, secret);
+    userId = decodedToken.id;
   } catch (error) {
     return res.status(401).json({ message: "Invalid Token" });
   }
@@ -179,7 +182,7 @@ app.post("/post", upload.single("image"), async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.status(201).json(savedPost);
+    res.status(201).json("Saved Post ",savedPost);
   } catch (error) {
     // If there's an error, abort the transaction
     console.error("Error creating post:", error);

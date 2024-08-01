@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate()
 
 
   const registerUser = async (e) => {
@@ -14,10 +17,12 @@ const Register = () => {
         body: JSON.stringify({ username, password }),
       });
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error('Network response had some issue communicating with the database');
       }
       const data = await response.json();
       console.log('User registered:', data);
+      navigate("/login")
+      
     } catch (error) {
       console.error('Failed to register user:', error);
     }
