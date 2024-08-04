@@ -5,26 +5,23 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const registerUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://127.0.0.1:4000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://127.0.0.1:4000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-      if (!response.ok) {
-        throw new Error('Network response had some issue communicating with the database');
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User registered:", data);
+        navigate("/login");
       }
-      const data = await response.json();
-      console.log('User registered:', data);
-      navigate("/login")
-      
     } catch (error) {
-      console.error('Failed to register user:', error);
+      console.error("Failed to register user:", error);
     }
   };
 
@@ -32,10 +29,7 @@ const Register = () => {
     <form className=" max-w-sm mx-auto" onSubmit={registerUser}>
       <h1 className="text-3xl font-semibold font-serif my-8">Register</h1>
       <div className="mb-5">
-        <label
-          
-          className="block mb-2 text-sm font-medium text-gray-900 "
-        >
+        <label className="block mb-2 text-sm font-medium text-gray-900 ">
           Your Username
         </label>
         <input
@@ -48,10 +42,7 @@ const Register = () => {
         />
       </div>
       <div className="mb-5">
-        <label
-        
-          className="block mb-2 text-sm font-medium text-gray-900 "
-        >
+        <label className="block mb-2 text-sm font-medium text-gray-900 ">
           Your Password
         </label>
         <input

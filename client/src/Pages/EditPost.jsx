@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import FroalaEditor from "react-froala-wysiwyg";
 import { useNavigate, useParams } from "react-router-dom";
-import TipTapEditor from "../components/TipTapEditor";
+import CustomFroalaEditor from "../components/FroalaEditorComponent";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -105,7 +106,7 @@ const EditPost = () => {
         />
       </div>
       <div className="mb-5 ">
-        <TipTapEditor value={content} onChange={setContent} />
+        <CustomFroalaEditor content={content} setContent={setContent} />
       </div>
       <button
         type="submit"

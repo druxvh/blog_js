@@ -30,8 +30,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-froala-wysiwyg": "^4.2.1",
+<<<<<<< HEAD
 >>>>>>> 579f0bb (remove quill, tiptap RTE & add froala editor)
     "react-router-dom": "^6.23.1"
+=======
+    "react-router-dom": "^6.23.1",
+    "wysiwyg-editor-node-sdk": "^4.2.1"
+>>>>>>> a20a39a (Add froala editor, fix edit & delete accessibility issue, add upload image route, minor fixes)
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

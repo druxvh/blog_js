@@ -28,11 +28,11 @@ const Content = () => {
   }, []);
 
   return (
-    <div className="ring max-container max-w-5xl mx-auto ">
+    <div className="max-container max-w-5xl mx-auto ">
       {posts.map((post) => (
         <div key={post._id}>
           <Post {...post} />
-          {console.log(post)}
+          {console.log('posts', {post})}
         </div>
       ))}
     </div>

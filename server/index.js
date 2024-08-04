@@ -35,16 +35,15 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Configure Multer for file uploads
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ //to define where and how to store uploaded files.
   destination: function (req, file, cb) {
     return cb(null, path.join(__dirname, "uploads"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
+    const uniqueSuffix = 
+    file.originalname.split(path.extname(file.originalname))[0] + '-' + Date.now() +  path.extname(file.originalname);
+
+
     return cb(null, uniqueSuffix);
   },
 });
@@ -100,13 +99,7 @@ app.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.cookie("token", token, { 
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
-    
-    }); //saves the jwt token to cookies
-
+    res.cookie("token", token, { httpOnly: true, sameSite: "none", secure: true}); //saves the jwt token to cookies
     res.status(201).json({
       id: userDoc._id,
       username,
@@ -175,7 +168,6 @@ app.post("/post", upload.single("image"), async (req, res) => {
       author: user._id,
     });
 
-
     const savedPost = await newPost.save({ session });
 
     // If everything is successful, commit the transaction
@@ -225,7 +217,7 @@ app.get("/post/:id", async (req, res) => {
 app.put(`/post/:id`, upload.single("image"), async (req, res) => {
   const { token } = req.cookies;
 
-   // Verify token and get user ID
+  // Verify token and get user ID
   let userId;
 
   try {
@@ -240,10 +232,11 @@ app.put(`/post/:id`, upload.single("image"), async (req, res) => {
 
   try {
     const postDoc = await Post.findById(id);
-    if (!postDoc) { // Added check for post existence
+    if (!postDoc) {
+      // Added check for post existence
       return res.status(404).json({ message: "Post not found" });
     }
-  
+
     // Check if the user is authorized to update the post
     if (postDoc.author.toString() !== userId) {
       return res.status(403).json({ message: "Unauthorized" });
@@ -256,10 +249,10 @@ app.put(`/post/:id`, upload.single("image"), async (req, res) => {
     } else {
       updateData.coverImage = postDoc.coverImage; // retains the old image
     }
-  
+
     // Update the post
     const updatedPost = await Post.updateOne({ _id: id }, { $set: updateData });
-  
+
     res.json({ message: "Post updated successfully", post: updatedPost });
   } catch (error) {
     console.error("Error updating post:", error);
@@ -268,41 +261,49 @@ app.put(`/post/:id`, upload.single("image"), async (req, res) => {
 });
 
 //Delete Post
-app.delete(`/post/:id`, async(req,res)=>{
+app.delete(`/post/:id`, async (req, res) => {
   const { token } = req.cookies;
 
   // Verify token and get user ID
- let userId;
+  let userId;
 
- try {
-   const decoded = jwt.verify(token, secret);
-   userId = decoded.id;
- } catch (error) {
-   return res.status(401).json({ message: "Invalid or expired token" });
- }
-
- const { id } = req.params;
- try {
-  const postDoc = await Post.findById(id);
-  if (!postDoc) { // Added check for post existence
-    return res.status(404).json({ message: "Post not found" });
+  try {
+    const decoded = jwt.verify(token, secret);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 
-  // Check if the user is authorized to update the post
-  if (postDoc.author.toString() !== userId) {
-    return res.status(403).json({ message: "Unauthorized" });
+  const { id } = req.params;
+  try {
+    const postDoc = await Post.findById(id);
+    if (!postDoc) {
+      // Added check for post existence
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if the user is authorized to update the post
+    if (postDoc.author.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    // delete the post
+    const deletePost = await Post.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Failed to delete post" });
   }
+});
 
-
-  // delete the post
-  const deletePost = await Post.findByIdAndDelete(id)
-
-  res.status(200).json({ message: "Post deleted successfully"});
-} catch (error) {
-  console.error("Error deleting post:", error);
-  res.status(500).json({ message: "Failed to delete post" });
-}
-})
+// Image upload route Froala Editor
+app.post('/upload_image', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ link: `http://127.0.0.1:4000/uploads/${req.file.filename}` });
+});
 
 // Server running
 app.listen(port, () => {

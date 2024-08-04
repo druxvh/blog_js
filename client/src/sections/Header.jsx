@@ -13,6 +13,7 @@ const Header = () => {
         credentials: "include",
       });
       if (response.ok) setUserInfo(null);
+      console.log("Logged Out");
     } catch (error) {
       console.error(error);
     }
@@ -21,7 +22,7 @@ const Header = () => {
   // Assigning Username
   const username = userInfo?.username;
   return (
-    <div className="max-container ring mb-8 ">
+    <div className="max-container mb-8 ">
       <div className="flex justify-between items-center">
         <Link to={"/"} className="text-2xl font-bold font-serif">
           Blog

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 const Post = ({_id, title, description, content, coverImage, author,  createdAt }) => {
-  // Format date and time code snippet from ChatGPT
   const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
@@ -14,7 +13,7 @@ const Post = ({_id, title, description, content, coverImage, author,  createdAt 
   });
 
   return (
-    <div className="ring my-5 flex flex-col md:flex-row gap-4 overflow-hidden">
+    <div className=" my-5 flex flex-col md:flex-row gap-4 overflow-hidden">
       <div className="w-full max-h-48 md:w-1/3  flex-shrink-0 overflow-hidden ">
         <Link to={`/post/${_id}`} 
         // target="_blank"

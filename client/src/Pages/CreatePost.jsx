@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import TipTapEditor from "../components/TipTapEditor";
-=======
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FroalaEditor from "react-froala-wysiwyg"
->>>>>>> 579f0bb (remove quill, tiptap RTE & add froala editor)
+import CustomFroalaEditor from "../components/FroalaEditorComponent";
 
-import "froala-editor/css/froala_style.min.css";
-import "froala-editor/css/froala_editor.pkgd.min.css";
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -19,14 +11,11 @@ const CreatePost = () => {
 
   const createNewPost = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    
-=======
     //////////    console.log(quillRef.current.getEditor().getText()); /////////////////////
->>>>>>> 579f0bb (remove quill, tiptap RTE & add froala editor)
+
     if (!title || !description || !image || !content) {
       alert("Please fill all the fields");
-      return;
+      return
     }
 
     try {
@@ -39,11 +28,11 @@ const CreatePost = () => {
       const response = await fetch("http://127.0.0.1:4000/post", {
         method: "POST",
         body: formData,
-        credentials: 'include'
+        credentials: "include",
       });
-      console.log("form data entered",formData);
+      console.log("form data entered", formData);
       if (response.ok) {
-        console.log("Post created successfully");
+        alert("Post created successfully");
         navigate("/");
       } else {
         console.log("Failed to create a post");
@@ -95,19 +84,12 @@ const CreatePost = () => {
           required
         />
       </div>
-<<<<<<< HEAD
-      <div className="mb-5  outline">
-        <TipTapEditor value={content} onChange={setContent} />
-=======
-      <div className="editor">
-
-        
-        <FroalaEditor 
-        tag='textarea'
+      <div className="mb-5">
+        <CustomFroalaEditor
+          content={content}
+          setContent={setContent}
+          
         />
-
-
->>>>>>> 579f0bb (remove quill, tiptap RTE & add froala editor)
       </div>
       <button
         type="submit"

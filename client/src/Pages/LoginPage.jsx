@@ -24,6 +24,7 @@ const Login = () => {
         response.json().then((userInfo) => {
           console.log(userInfo);
           setUserInfo(userInfo);
+          console.log("Logged In",userInfo);
           navigate('/')
         });
       } else {
