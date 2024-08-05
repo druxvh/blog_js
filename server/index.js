@@ -150,38 +150,36 @@ app.post("/post", upload.single("image"), async (req, res) => {
     return res.status(401).json({ message: "Invalid Token" });
   }
 
-  // Start a session
-  const session = await mongoose.startSession();
-  session.startTransaction();
+ // Start a session
+const session = await mongoose.startSession();
+session.startTransaction();
 
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const newPost = new Post({
-      title,
-      description,
-      content,
-      coverImage: req.file.filename,
-      author: user._id,
-    });
-
-    const savedPost = await newPost.save({ session });
-
-    // If everything is successful, commit the transaction
-    await session.commitTransaction();
-    session.endSession();
-
-    res.status(201).json("Saved Post ",savedPost);
-  } catch (error) {
-    // If there's an error, abort the transaction
-    console.error("Error creating post:", error);
-    await session.abortTransaction();
-    session.endSession();
-    res.status(500).json({ message: "Failed to create post" });
+try {
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  const newPost = new Post({
+    title,
+    description,
+    content,
+    coverImage: req.file.filename,
+    author: user._id,
+  });
+
+  const savedPost = await newPost.save({ session });
+
+  // If everything is successful, commit the transaction
+  await session.commitTransaction();
+  res.status(201).json({ message: "Post saved successfully", post: savedPost });
+} catch (error) {
+  console.error("Error creating post:", error);
+  await session.abortTransaction();
+  res.status(500).json({ message: "Failed to create post" });
+} finally {
+  session.endSession();
+}
 });
 
 //Fetching all posts

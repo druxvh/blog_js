@@ -11,8 +11,6 @@ const CreatePost = () => {
 
   const createNewPost = async (e) => {
     e.preventDefault();
-    //////////    console.log(quillRef.current.getEditor().getText()); /////////////////////
-
     if (!title || !description || !image || !content) {
       alert("Please fill all the fields");
       return

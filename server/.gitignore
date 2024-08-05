@@ -1,6 +1,8 @@
 ### dotenv ###
 .env
 
+# Folder
+uploads
 ### Node ###
 # Logs
 logs
