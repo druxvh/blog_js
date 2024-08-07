@@ -2,8 +2,6 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
-import { Button } from "@material-tailwind/react";
-
 const Header = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
   
@@ -26,7 +24,7 @@ const Header = () => {
   return (
     <div className="max-container mb-8 ">
       <div className="flex justify-between items-center">
-        <Link to={"/"} className="text-2xl font-bold font-serif">
+        <Link to={"/"} className="text-2xl font-bold ">
           Blog
         </Link>
         <div className="flex gap-2">

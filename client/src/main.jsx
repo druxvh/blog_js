@@ -3,8 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { ThemeProvider } from "@material-tailwind/react";
-
 //Pages, Components & Sections
 import Layout from "./Pages/Layout.jsx";
 import Content from "./sections/Content.jsx";
@@ -36,13 +34,16 @@ const router = createBrowserRouter([
       {
         path: "/create",
         element: <CreatePost />,
+        element: <CreatePost />,
       },
       {
         path: "/post/:id",
         element: <PostPage />,
+        element: <PostPage />,
       },
       {
         path: "/edit/:id",
+        element: <EditPost />,
         element: <EditPost />,
       },
     ],
@@ -51,8 +52,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <UserContextProvider>
-    <ThemeProvider>
       <RouterProvider router={router} />
-    </ThemeProvider>
   </UserContextProvider>
 );
