@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
+import { Button } from "@material-tailwind/react";
+
 const Header = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
   

@@ -76,7 +76,7 @@ const PostPage = () => {
   return (
     <div className="  max-w-3xl flex mx-auto px-10 ring flex-wrap">
       <div className=" ring flex justify-between w-full flex-col gap-8 my-14">
-        <h1 className=" text-4xl  max-w-md sm:max-w-2xl sm:text-5xl font-bold ">
+        <h1 className=" text-4xl  max-w-md sm:max-w-2xl sm:text-5xl font-bold text-wrap">
           {postInfo.title}
         </h1>
         <div className=" flex justify-between">
