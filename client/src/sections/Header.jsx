@@ -1,26 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import Dropdown from "../components/Dropdown";
 
-import { MdMode, MdOutlineAccountCircle } from "react-icons/md";
+import { MdMenu, MdMode, MdOutlineAccountCircle } from "react-icons/md";
 
 const Header = () => {
-  const { userInfo, setUserInfo } = useContext(UserContext);
-  const [dropdown, setDropdown] = useState(false)
+  const { userInfo } = useContext(UserContext);
+  const [dropdown, setDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
-  // const logout = async () => {
-  //   try {
-  //     const response = await fetch("http://127.0.0.1:4000/logout", {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) setUserInfo(null);
-  //     console.log("Logged Out");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(false);
+      }
+    };
+
+    if (dropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdown]);
 
   // Assigning Username
   const username = userInfo?.username;
@@ -34,27 +40,31 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {username ? (
             <>
-              <Link to="/create" className=" flex items-center gap-2">
-                  
-                  <button className="flex justify-center items-center size-12  rounded-xl shadow-2xl shadow-black">
-
-                  <MdMode className="size-6"/>
+              <div className=" hidden sm:flex gap-3">
+                <Link to="/create" className=" flex items-center gap-2">
+                  <button className="flex justify-center items-center size-12  rounded-xl shadow-custom transition ease-in-out delay-150 bg-red-500 hover:bg-red-600">
+                    <MdMode className="size-6 bg-transparent text-white" />
                   </button>
-              </Link>
-              <Link className="flex items-center gap-2 ">
-                  
-                  <button className="flex justify-center items-center size-12  rounded-xl shadow-2xl shadow-black " onClick={()=>setDropdown((prev)=> !prev)}>
-
-                  <MdOutlineAccountCircle className="size-7"/>
+                </Link>
+                <div className="flex items-center">
+                  <button
+                    className="flex justify-center items-center size-12  rounded-xl shadow-custom transition ease-in-out delay-150 bg-gray-100 hover:bg-slate-200 "
+                    onClick={() => setDropdown((prev) => !prev)}
+                    ref={dropdownRef}
+                  >
+                    <MdOutlineAccountCircle className="size-7 bg-transparent" />
                   </button>
-              </Link>
-              {/* <button
-                onClick={logout}
-                // className="bg-red-500 text-white py-1.5 px-4 rounded"
-                className="w-24 h-10"
-              >
-                Logout
-              </button> */}
+                </div>
+              </div>
+              <div className="sm:hidden flex items-center gap-2 ">
+                <button
+                  className="flex justify-center items-center size-12  transition ease-in-out delay-150 hover:scale-110"
+                  onClick={() => setDropdown((prev) => !prev)}
+                  ref={dropdownRef}
+                >
+                  <MdMenu className="size-11 bg-transparent" />
+                </button>
+              </div>
             </>
           ) : (
             <>
@@ -73,7 +83,7 @@ const Header = () => {
           )}
         </div>
       </div>
-      {dropdown && <Dropdown/>}
+      {dropdown && <Dropdown />}
     </div>
   );
 };
