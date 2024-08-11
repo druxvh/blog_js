@@ -17,15 +17,15 @@ const Header = () => {
       }
     };
 
-    if (dropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    // if (dropdown) {
+    //   document.addEventListener("mousedown", handleClickOutside);
+    // } else {
+    //   document.removeEventListener("mousedown", handleClickOutside);
+    // }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    // return () => {
+    //   document.removeEventListener("mousedown", handleClickOutside);
+    // };
   }, [dropdown]);
 
   // Assigning Username
@@ -33,8 +33,8 @@ const Header = () => {
 
   return (
     <div className="max-container">
-      <div className="h-16 w-full flex justify-between items-center px-6 ">
-        <Link to={"/"} className="text-4xl font-montserrat font-black">
+      <div className="h-12 sm:h-16 w-full min-w-[360px] flex justify-between items-center px-6 ">
+        <Link to={"/"} className="text-2xl sm:text-4xl font-montserrat font-black">
           Articul8
         </Link>
         <div className="flex items-center gap-3">
@@ -52,7 +52,7 @@ const Header = () => {
                     onClick={() => setDropdown((prev) => !prev)}
                     ref={dropdownRef}
                   >
-                    <MdOutlineAccountCircle className="size-7 bg-transparent" />
+                    <MdOutlineAccountCircle className="size-8 bg-transparent" />
                   </button>
                 </div>
               </div>
@@ -62,7 +62,7 @@ const Header = () => {
                   onClick={() => setDropdown((prev) => !prev)}
                   ref={dropdownRef}
                 >
-                  <MdMenu className="size-11 bg-transparent" />
+                  <MdMenu className="size-7 bg-transparent" />
                 </button>
               </div>
             </>

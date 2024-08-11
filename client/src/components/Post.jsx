@@ -1,22 +1,31 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const Post = ({_id, title, description, content, coverImage, author,  createdAt }) => {
+const Post = ({
+  _id,
+  title,
+  description,
+  content,
+  coverImage,
+  author,
+  createdAt,
+}) => {
   const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
-  const formattedTime = new Date(createdAt).toLocaleTimeString("en-GB", {
+  const formattedTime = new Date(createdAt).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
+    hour12: true,
   });
 
   return (
-    <div className=" my-5 flex flex-col md:flex-row gap-4 overflow-hidden">
-      <div className="w-full max-h-48 md:w-1/3  flex-shrink-0 overflow-hidden ">
-        <Link to={`/post/${_id}`} 
-        // target="_blank"
+    <div className="w-72 min-w-72 h-96 p-2 flex flex-col gap-1 border border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,0.5)]">
+      <div className="">
+        <Link
+          to={`/post/${_id}`}
+          // target="_blank"
         >
           <img
             src={`http://127.0.0.1:4000/uploads/${coverImage}`}
@@ -25,18 +34,26 @@ const Post = ({_id, title, description, content, coverImage, author,  createdAt 
           />
         </Link>
       </div>
-      <div className="flex flex-col justify-between w-full md:w-2/3 p-4 ">
-        <Link to={`/post/${_id}`} 
-        // target="_blank"
-        >
-          <div>
-            <h2 className="text-xl md:text-2xl font-serif font-bold ">
-              {title}
-            </h2>
-            <span className="text-xs text-slate-600 font-mono">{`@${author?.username} ${formattedDate} ${formattedTime}`}</span>
-            <p className="mt-3 text-sm md:text-base">{description}</p>
+      <div className="  h-full flex flex-col justify-between w-full">
+        
+          <div className="flex flex-col">
+            <div className="flex flex-col  gap-4">
+              <h2 className="text-xl font-montserrat font-bold leading-none">
+                {title}
+              </h2>
+              <p className="text-[12px]  tracking-tight font-montserrat">
+                {description}
+              </p>
+            </div>
+
           </div>
-        </Link>
+            <div className="flex justify-between mb-2">
+              <span className="text-[9px] text-black font-space_mono font-bold">{`@${author?.username}`}</span>
+              <div className="flex gap-2">
+                <span className="text-[8px] text-black font-space_mono">{`${formattedDate}`}</span>
+                <span className="text-[8px] text-black font-space_mono">{` ${formattedTime}`}</span>
+              </div>
+            </div>
       </div>
     </div>
   );

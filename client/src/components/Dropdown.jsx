@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
-
 const menuItems = [
   {
     title: "My Posts",
@@ -20,8 +19,6 @@ const menuItems = [
 
 const liStyle = `px-2 py-3
              transition ease-in-out delay-150 hover:bg-slate-200`;
-       
-             
 
 const Dropdown = () => {
     const { userInfo, setUserInfo } = useContext(UserContext);
@@ -67,4 +64,4 @@ const Dropdown = () => {
   );
 };
 
-export default Dropdown;
+export default Dropdown
